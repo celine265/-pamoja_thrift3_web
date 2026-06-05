@@ -13,26 +13,33 @@ class FooterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.earthBrown,
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Icon(
-                  Icons.recycling,
-                  color: AppColors.earthBrown,
-                  size: 18,
-                ),
+              Image.asset(
+                'assets/logo/logo 1.png',
+                width: 32,
+                height: 32,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Icon(
+                      Icons.recycling,
+                      color: AppColors.earthBrown,
+                      size: 18,
+                    ),
+                  );
+                },
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Text(
                 AppConstants.logoText,
                 style: AppTextStyles.titleLarge.copyWith(
@@ -61,7 +68,14 @@ class FooterSection extends StatelessWidget {
               );
             }).toList(),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
+          Text(
+            'info@pamojathrift.com  |  +254 700 000 000',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textOnDark.withAlpha(150),
+            ),
+          ),
+          const SizedBox(height: 20),
           const Divider(color: AppColors.earthBrownLight),
           const SizedBox(height: 16),
           Text(

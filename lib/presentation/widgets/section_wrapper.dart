@@ -12,8 +12,8 @@ class SectionWrapper extends StatelessWidget {
     super.key,
     required this.child,
     this.backgroundColor,
-    this.topPadding = 80,
-    this.bottomPadding = 80,
+    this.topPadding = 60,
+    this.bottomPadding = 60,
   });
 
   @override

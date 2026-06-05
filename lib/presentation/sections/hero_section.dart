@@ -6,8 +6,37 @@ import '../../core/theme/app_text_styles.dart';
 import '../widgets/cta_button.dart';
 import '../widgets/section_wrapper.dart';
 
-class HeroSection extends StatelessWidget {
-  const HeroSection({super.key});
+class HeroSection extends StatefulWidget {
+  final VoidCallback? onDownloadTap;
+
+  const HeroSection({super.key, this.onDownloadTap});
+
+  @override
+  State<HeroSection> createState() => _HeroSectionState();
+}
+
+class _HeroSectionState extends State<HeroSection>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _floatController;
+  late Animation<double> _floatAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _floatController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+    _floatAnimation = Tween<double>(begin: -10, end: 10).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _floatController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +66,23 @@ class HeroSection extends StatelessWidget {
                     : CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Buy and Sell Quality Second-Hand Products with Ease',
+                    'No More Digging Through Bales to Find the Perfect Outfit',
                     style: isMobile
                         ? AppTextStyles.displaySmall
                         : AppTextStyles.displayLarge,
                     textAlign:
                         isMobile ? TextAlign.center : TextAlign.start,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   Text(
-                    'Pamoja Thrift connects buyers and sellers in a trusted marketplace where affordable products find new homes and communities benefit from sustainable shopping.',
+                    'Pamoja Thrift helps buyers discover second-hand clothing from the comfort of their homes while helping sellers reach more customers online. Save time, reduce transportation costs, avoid weather-related inconveniences, and find exactly what you need faster.',
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontSize: isMobile ? 15 : 16,
                     ),
                     textAlign:
                         isMobile ? TextAlign.center : TextAlign.start,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
@@ -64,13 +93,7 @@ class HeroSection extends StatelessWidget {
                       CtaButton(
                         label: 'Download APK',
                         icon: Icons.download,
-                        onPressed: () {},
-                      ),
-                      CtaButton(
-                        label: 'Post an Item',
-                        isPrimary: false,
-                        icon: Icons.add_circle_outline,
-                        onPressed: () {},
+                        onPressed: widget.onDownloadTap,
                       ),
                       CtaButton(
                         label: 'Learn More',
@@ -79,13 +102,24 @@ class HeroSection extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 28),
+                  _TrustIndicators(isMobile: isMobile),
                 ],
               ),
             ),
           ),
           ResponsiveRowColumnItem(
             rowFlex: 1,
-            child: _HeroMockup(isMobile: isMobile),
+            child: AnimatedBuilder(
+              animation: _floatAnimation,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(0, _floatAnimation.value),
+                  child: child,
+                );
+              },
+              child: _HeroImage(isMobile: isMobile),
+            ),
           ),
         ],
       ),
@@ -93,10 +127,61 @@ class HeroSection extends StatelessWidget {
   }
 }
 
-class _HeroMockup extends StatelessWidget {
+class _TrustIndicators extends StatelessWidget {
   final bool isMobile;
 
-  const _HeroMockup({required this.isMobile});
+  const _TrustIndicators({required this.isMobile});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      'Shop from Anywhere',
+      'Save Time and Transport Costs',
+      'Connect Directly with Sellers',
+      'Discover Affordable Fashion',
+    ];
+
+    return Column(
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: items.map((item) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            mainAxisSize: isMobile ? MainAxisSize.min : MainAxisSize.max,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withAlpha(25),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: AppColors.primary,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                item,
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _HeroImage extends StatelessWidget {
+  final bool isMobile;
+
+  const _HeroImage({required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +189,15 @@ class _HeroMockup extends StatelessWidget {
       builder: (context, constraints) {
         final size = isMobile
             ? constraints.maxWidth * 0.7
-            : (constraints.maxWidth.clamp(280, 400).toDouble());
+            : (constraints.maxWidth.clamp(280, 350).toDouble());
         return Center(
           child: Container(
             width: size,
-            height: size * 1.6,
+            height: size * 1.7,
             decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: AppColors.dividerLight,
-                width: 4,
-              ),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: Colors.grey.shade300, width: 4),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(30),
@@ -124,39 +206,44 @@ class _HeroMockup extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: size * 0.3,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(3),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                children: [
+                  Container(
+                    height: 28,
+                    color: Colors.grey.shade200,
+                    child: Center(
+                      child: Container(
+                        width: 60,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Icon(
-                  Icons.shopping_bag_outlined,
-                  size: size * 0.2,
-                  color: AppColors.primary.withAlpha(100),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Pamoja Thrift',
-                  style: AppTextStyles.titleMedium.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: Image.asset(
+                      'assets/images/app photo.png',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: AppColors.primary.withAlpha(15),
+                          child: Center(
+                            child: Icon(
+                              Icons.shopping_bag_outlined,
+                              size: size * 0.2,
+                              color: AppColors.primary.withAlpha(100),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Thrift with Purpose',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

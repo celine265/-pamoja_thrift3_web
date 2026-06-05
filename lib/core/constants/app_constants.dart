@@ -7,8 +7,8 @@ class AppConstants {
 
   static const List<Map<String, String>> navItems = [
     {'label': 'Home', 'sectionId': 'home'},
-    {'label': 'About', 'sectionId': 'about'},
-    {'label': 'Download App', 'sectionId': 'download'},
+    {'label': 'Features', 'sectionId': 'features'},
+    {'label': 'How It Works', 'sectionId': 'how-it-works'},
     {'label': 'Contact', 'sectionId': 'contact'},
   ];
 

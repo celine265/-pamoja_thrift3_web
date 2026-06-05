@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../sections/about_section.dart';
-import '../sections/buyer_problems_section.dart';
 import '../sections/contact_section.dart';
 import '../sections/download_section.dart';
+import '../sections/features_section.dart';
 import '../sections/footer_section.dart';
 import '../sections/hero_section.dart';
+import '../sections/how_it_works_section.dart';
 import '../sections/nav_bar.dart';
-import '../sections/seller_problems_section.dart';
+import '../sections/problem_solution_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,9 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String _activeSection = 'home';
   final Map<String, GlobalKey> _sectionKeys = {
     'home': GlobalKey(),
-    'about': GlobalKey(),
-    'buyer': GlobalKey(),
-    'seller': GlobalKey(),
+    'features': GlobalKey(),
+    'problem-solution': GlobalKey(),
+    'how-it-works': GlobalKey(),
     'download': GlobalKey(),
     'contact': GlobalKey(),
   };
@@ -73,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
-      endDrawer: MobileDrawer(onNavTap: _scrollTo),
       body: Column(
         children: [
           NavBar(
@@ -85,11 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  Container(key: _sectionKeys['home'], child: const HeroSection()),
-                  Container(key: _sectionKeys['about'], child: const AboutSection()),
-                  Container(key: _sectionKeys['buyer'], child: const BuyerProblemsSection()),
-                  Container(key: _sectionKeys['seller'], child: const SellerProblemsSection()),
-                  Container(key: _sectionKeys['download'], child: const DownloadSection()),
+                  Container(key: _sectionKeys['home'], child: HeroSection(onDownloadTap: () => _scrollTo('download'))),
+                  Container(key: _sectionKeys['features'], child: const FeaturesSection()),
+                  Container(key: _sectionKeys['problem-solution'], child: const ProblemSolutionSection()),
+                  Container(key: _sectionKeys['how-it-works'], child: const HowItWorksSection()),
+                  Container(key: _sectionKeys['download'], child: DownloadSection(onDownloadTap: () => _scrollTo('download'))),
                   Container(key: _sectionKeys['contact'], child: const ContactSection()),
                   FooterSection(onNavTap: _scrollTo),
                 ],

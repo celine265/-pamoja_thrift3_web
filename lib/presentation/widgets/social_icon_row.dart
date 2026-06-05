@@ -15,16 +15,17 @@ class SocialIconRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = iconColor ?? AppColors.primary;
-    final icons = [
-      Icons.facebook,
-      Icons.camera_alt,
-      Icons.alternate_email,
-      Icons.chat_bubble_outline,
+
+    final socials = [
+      (Icons.facebook, 'Facebook', 'https://facebook.com/pamojathrift'),
+      (Icons.camera_alt, 'Instagram', 'https://instagram.com/pamojathrift'),
+      (Icons.alternate_email, 'Twitter', 'https://twitter.com/pamojathrift'),
+      (Icons.chat_bubble_outline, 'WhatsApp', 'https://wa.me/254700000000'),
     ];
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: icons.map((icon) {
+      children: socials.map((s) {
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: MouseRegion(
@@ -35,22 +36,14 @@ class SocialIconRow extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                onPressed: null,
-                icon: Icon(icon, color: color, size: iconSize),
-                tooltip: _getTooltip(icon),
+                onPressed: () {},
+                icon: Icon(s.$1, color: color, size: iconSize),
+                tooltip: s.$2,
               ),
             ),
           ),
         );
       }).toList(),
     );
-  }
-
-  String _getTooltip(IconData icon) {
-    if (icon == Icons.facebook) return 'Facebook';
-    if (icon == Icons.camera_alt) return 'Instagram';
-    if (icon == Icons.alternate_email) return 'Twitter';
-    if (icon == Icons.chat_bubble_outline) return 'WhatsApp';
-    return '';
   }
 }
