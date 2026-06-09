@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (key?.currentContext != null) {
       Scrollable.ensureVisible(
         key!.currentContext!,
-        duration: const Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 700),
         curve: Curves.easeInOut,
       );
     }
@@ -78,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           NavBar(
             scrollController: _scrollController,
             activeSection: _activeSection,
+            onNavigate: _scrollTo,
           ),
           Expanded(
             child: SingleChildScrollView(

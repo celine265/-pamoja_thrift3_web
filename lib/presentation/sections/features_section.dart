@@ -13,7 +13,7 @@ class FeaturesSection extends StatelessWidget {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
 
     return Container(
-      color: AppColors.surfaceLight,
+      color: Colors.white,
       child: SectionWrapper(
         child: Column(
           children: [
@@ -31,49 +31,86 @@ class FeaturesSection extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            Wrap(
-              spacing: 24,
-              runSpacing: 24,
-              alignment: WrapAlignment.center,
-              children: [
-                SizedBox(
-                  width: isMobile ? double.infinity : 260,
-                  child: _FeatureCard(
+            if (isMobile)
+              Column(
+                children: [
+                  _FeatureCard(
                     icon: Icons.search,
                     title: 'Smart Search',
                     description:
                         'Find specific clothing items without spending hours searching through bales.',
+                    isMobile: true,
                   ),
-                ),
-                SizedBox(
-                  width: isMobile ? double.infinity : 260,
-                  child: _FeatureCard(
+                  const SizedBox(height: 16),
+                  _FeatureCard(
                     icon: Icons.home_outlined,
                     title: 'Shop From Home',
                     description:
                         'Browse products from anywhere without travelling to crowded markets.',
+                    isMobile: true,
                   ),
-                ),
-                SizedBox(
-                  width: isMobile ? double.infinity : 260,
-                  child: _FeatureCard(
+                  const SizedBox(height: 16),
+                  _FeatureCard(
                     icon: Icons.people_outline,
                     title: 'Direct Seller Access',
                     description:
                         'Connect directly with sellers offering the products you need.',
+                    isMobile: true,
                   ),
-                ),
-                SizedBox(
-                  width: isMobile ? double.infinity : 260,
-                  child: _FeatureCard(
+                  const SizedBox(height: 16),
+                  _FeatureCard(
                     icon: Icons.monetization_on_outlined,
                     title: 'Affordable Fashion',
                     description:
                         'Discover quality second-hand clothing at affordable prices.',
+                    isMobile: true,
                   ),
-                ),
-              ],
-            ),
+                ],
+              )
+            else
+              Wrap(
+                spacing: 24,
+                runSpacing: 24,
+                alignment: WrapAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 260,
+                    child: _FeatureCard(
+                      icon: Icons.search,
+                      title: 'Smart Search',
+                      description:
+                          'Find specific clothing items without spending hours searching through bales.',
+                    ),
+                  ),
+                  SizedBox(
+                    width: 260,
+                    child: _FeatureCard(
+                      icon: Icons.home_outlined,
+                      title: 'Shop From Home',
+                      description:
+                          'Browse products from anywhere without travelling to crowded markets.',
+                    ),
+                  ),
+                  SizedBox(
+                    width: 260,
+                    child: _FeatureCard(
+                      icon: Icons.people_outline,
+                      title: 'Direct Seller Access',
+                      description:
+                          'Connect directly with sellers offering the products you need.',
+                    ),
+                  ),
+                  SizedBox(
+                    width: 260,
+                    child: _FeatureCard(
+                      icon: Icons.monetization_on_outlined,
+                      title: 'Affordable Fashion',
+                      description:
+                          'Discover quality second-hand clothing at affordable prices.',
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -85,11 +122,13 @@ class _FeatureCard extends StatefulWidget {
   final IconData icon;
   final String title;
   final String description;
+  final bool isMobile;
 
   const _FeatureCard({
     required this.icon,
     required this.title,
     required this.description,
+    this.isMobile = false,
   });
 
   @override
@@ -110,10 +149,14 @@ class _FeatureCardState extends State<_FeatureCard> {
         curve: Curves.easeOut,
         transform: _isHovered ? (Matrix4.identity()..setTranslationRaw(0, -6, 0)) : Matrix4.identity(),
         child: Container(
-          padding: const EdgeInsets.all(32),
+          padding: EdgeInsets.all(widget.isMobile ? 20 : 32),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: _isHovered ? AppColors.accent : Colors.transparent,
+              width: 2,
+            ),
             boxShadow: [
               BoxShadow(
                 color: _isHovered
@@ -128,24 +171,24 @@ class _FeatureCardState extends State<_FeatureCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(14),
+                padding: EdgeInsets.all(widget.isMobile ? 10 : 14),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withAlpha(25),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(widget.icon, color: AppColors.primary, size: 32),
+                child: Icon(widget.icon, color: AppColors.primary, size: widget.isMobile ? 24 : 32),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 widget.title,
-                style: AppTextStyles.titleLarge.copyWith(
+                style: (widget.isMobile ? AppTextStyles.titleMedium : AppTextStyles.titleLarge).copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 widget.description,
-                style: AppTextStyles.bodyLarge.copyWith(height: 1.6),
+                style: (widget.isMobile ? AppTextStyles.bodyMedium : AppTextStyles.bodyLarge).copyWith(height: 1.5),
               ),
             ],
           ),

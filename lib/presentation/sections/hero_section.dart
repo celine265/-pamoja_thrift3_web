@@ -43,86 +43,111 @@ class _HeroSectionState extends State<HeroSection>
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
     final isTablet = ResponsiveBreakpoints.of(context).isTablet;
 
-    return SectionWrapper(
-      topPadding: 60,
-      bottomPadding: 60,
-      child: ResponsiveRowColumn(
-        rowMainAxisAlignment: MainAxisAlignment.spaceBetween,
-        rowCrossAxisAlignment: CrossAxisAlignment.center,
-        columnCrossAxisAlignment: CrossAxisAlignment.center,
-        layout: isMobile || isTablet
-            ? ResponsiveRowColumnType.COLUMN
-            : ResponsiveRowColumnType.ROW,
-        columnSpacing: 40,
-        rowSpacing: 40,
-        children: [
-          ResponsiveRowColumnItem(
-            rowFlex: 1,
-            child: SizedBox(
-              width: isMobile ? double.infinity : 560,
-              child: Column(
-                crossAxisAlignment: isMobile
-                    ? CrossAxisAlignment.center
-                    : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'No More Digging Through Bales to Find the Perfect Outfit',
-                    style: isMobile
-                        ? AppTextStyles.displaySmall
-                        : AppTextStyles.displayLarge,
-                    textAlign:
-                        isMobile ? TextAlign.center : TextAlign.start,
+    return Container(
+      color: AppColors.backgroundLight,
+      child: SectionWrapper(
+      topPadding: isMobile ? 40 : 60,
+      bottomPadding: isMobile ? 40 : 60,
+      child: isMobile
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedBuilder(
+                  animation: _floatAnimation,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(0, _floatAnimation.value),
+                      child: child,
+                    );
+                  },
+                  child: _HeroImage(isMobile: true),
+                ),
+                const SizedBox(height: 32),
+                _buildContent(isMobile: true),
+              ],
+            )
+          : ResponsiveRowColumn(
+              rowMainAxisAlignment: MainAxisAlignment.spaceBetween,
+              rowCrossAxisAlignment: CrossAxisAlignment.center,
+              columnCrossAxisAlignment: CrossAxisAlignment.center,
+              layout: isTablet
+                  ? ResponsiveRowColumnType.COLUMN
+                  : ResponsiveRowColumnType.ROW,
+              columnSpacing: 40,
+              rowSpacing: 40,
+              children: [
+                ResponsiveRowColumnItem(
+                  rowFlex: 1,
+                  child: SizedBox(
+                    width: isTablet ? double.infinity : 560,
+                    child: _buildContent(isMobile: isTablet),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Pamoja Thrift helps buyers discover second-hand clothing from the comfort of their homes while helping sellers reach more customers online. Save time, reduce transportation costs, avoid weather-related inconveniences, and find exactly what you need faster.',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontSize: isMobile ? 15 : 16,
-                    ),
-                    textAlign:
-                        isMobile ? TextAlign.center : TextAlign.start,
+                ),
+                ResponsiveRowColumnItem(
+                  rowFlex: 1,
+                  child: AnimatedBuilder(
+                    animation: _floatAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, _floatAnimation.value),
+                        child: child,
+                      );
+                    },
+                    child: _HeroImage(isMobile: false),
                   ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    alignment: isMobile
-                        ? WrapAlignment.center
-                        : WrapAlignment.start,
-                    children: [
-                      CtaButton(
-                        label: 'Download APK',
-                        icon: Icons.download,
-                        onPressed: widget.onDownloadTap,
-                      ),
-                      CtaButton(
-                        label: 'Learn More',
-                        isOutlined: true,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  _TrustIndicators(isMobile: isMobile),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-          ResponsiveRowColumnItem(
-            rowFlex: 1,
-            child: AnimatedBuilder(
-              animation: _floatAnimation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0, _floatAnimation.value),
-                  child: child,
-                );
-              },
-              child: _HeroImage(isMobile: isMobile),
-            ),
-          ),
-        ],
       ),
+    );
+  }
+
+  Widget _buildContent({required bool isMobile}) {
+    return Column(
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        Text(
+          'No More Digging Through Bales to Find the Perfect Outfit',
+          style: isMobile
+              ? AppTextStyles.displaySmall
+              : AppTextStyles.displayLarge,
+          textAlign:
+              isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Pamoja Thrift helps buyers discover second-hand clothing from the comfort of their homes while helping sellers reach more customers online. Save time, reduce transportation costs, avoid weather-related inconveniences, and find exactly what you need faster.',
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontSize: isMobile ? 15 : 16,
+          ),
+          textAlign:
+              isMobile ? TextAlign.center : TextAlign.start,
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          alignment: isMobile
+              ? WrapAlignment.center
+              : WrapAlignment.start,
+          children: [
+            CtaButton(
+              label: 'Download APK',
+              icon: Icons.download,
+              onPressed: widget.onDownloadTap,
+            ),
+            CtaButton(
+              label: 'Learn More',
+              isOutlined: true,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        const SizedBox(height: 28),
+        _TrustIndicators(isMobile: isMobile),
+      ],
     );
   }
 }
@@ -188,7 +213,7 @@ class _HeroImage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = isMobile
-            ? constraints.maxWidth * 0.7
+            ? constraints.maxWidth * 0.65
             : (constraints.maxWidth.clamp(280, 350).toDouble());
         return Center(
           child: Container(
@@ -199,11 +224,11 @@ class _HeroImage extends StatelessWidget {
               borderRadius: BorderRadius.circular(28),
               border: Border.all(color: Colors.grey.shade300, width: 4),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(30),
-                  blurRadius: 40,
-                  offset: const Offset(10, 20),
-                ),
+                  BoxShadow(
+                    color: Colors.black.withAlpha(30),
+                    blurRadius: isMobile ? 20 : 40,
+                    offset: isMobile ? const Offset(4, 10) : const Offset(10, 20),
+                  ),
               ],
             ),
             child: ClipRRect(

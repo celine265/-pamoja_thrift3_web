@@ -12,10 +12,11 @@ class FooterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.earthBrown,
+      color: AppColors.textPrimary,
       padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
       child: Column(
         children: [
+          // Logo row
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -33,7 +34,7 @@ class FooterSection extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.recycling,
-                      color: AppColors.earthBrown,
+                      color: Colors.white,
                       size: 18,
                     ),
                   );
@@ -43,48 +44,82 @@ class FooterSection extends StatelessWidget {
               Text(
                 AppConstants.logoText,
                 style: AppTextStyles.titleLarge.copyWith(
-                  color: AppColors.textOnDark,
+                  color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 24),
+          // Nav links
           Wrap(
             spacing: 24,
             runSpacing: 12,
             alignment: WrapAlignment.center,
             children: AppConstants.navItems.map((item) {
-              return GestureDetector(
+              return _FooterLink(
+                label: item['label']!,
                 onTap: onNavTap != null
                     ? () => onNavTap!(item['sectionId']!)
                     : null,
-                child: Text(
-                  item['label']!,
-                  style: AppTextStyles.navLink.copyWith(
-                    color: AppColors.textOnDark.withAlpha(200),
-                  ),
-                ),
               );
             }).toList(),
           ),
           const SizedBox(height: 20),
+          // Contact
           Text(
             'info@pamojathrift.com  |  +254 700 000 000',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textOnDark.withAlpha(150),
+              color: Colors.white.withAlpha(150),
             ),
           ),
           const SizedBox(height: 20),
-          const Divider(color: AppColors.earthBrownLight),
+          Divider(color: Colors.white.withAlpha(40)),
           const SizedBox(height: 16),
+          // Copyright
           Text(
             '© 2026 Pamoja Thrift. All Rights Reserved.',
             style: AppTextStyles.caption.copyWith(
-              color: AppColors.textOnDark.withAlpha(150),
+              color: AppColors.textSecondary,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _FooterLink extends StatefulWidget {
+  final String label;
+  final VoidCallback? onTap;
+
+  const _FooterLink({
+    required this.label,
+    this.onTap,
+  });
+
+  @override
+  State<_FooterLink> createState() => _FooterLinkState();
+}
+
+class _FooterLinkState extends State<_FooterLink> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          style: AppTextStyles.navLink.copyWith(
+            color: _isHovered ? AppColors.accent : const Color(0xFFF8F9FA),
+          ),
+          child: Text(widget.label),
+        ),
       ),
     );
   }

@@ -40,7 +40,8 @@ class ProblemSolutionSection extends StatelessWidget {
                 rowFlex: 1,
                 child: _RoleCard(
                   title: 'For Buyers',
-                  color: AppColors.primary,
+                  roleColor: AppColors.primary,
+                  isMobile: isMobile,
                   challenges: const [
                     'Spending hours digging through clothing',
                     'Difficulty finding the right size, style, or color',
@@ -61,7 +62,8 @@ class ProblemSolutionSection extends StatelessWidget {
                 rowFlex: 1,
                 child: _RoleCard(
                   title: 'For Sellers',
-                  color: AppColors.accentDark,
+                  roleColor: AppColors.accent,
+                  isMobile: isMobile,
                   challenges: const [
                     'Not knowing every item available inside a bale',
                     'Customers becoming frustrated while searching',
@@ -88,13 +90,15 @@ class ProblemSolutionSection extends StatelessWidget {
 
 class _RoleCard extends StatelessWidget {
   final String title;
-  final Color color;
+  final Color roleColor;
+  final bool isMobile;
   final List<String> challenges;
   final List<String> solutions;
 
   const _RoleCard({
     required this.title,
-    required this.color,
+    required this.roleColor,
+    required this.isMobile,
     required this.challenges,
     required this.solutions,
   });
@@ -116,40 +120,59 @@ class _RoleCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header strip
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 28),
+            padding: EdgeInsets.symmetric(vertical: isMobile ? 16 : 20, horizontal: isMobile ? 20 : 28),
             decoration: BoxDecoration(
-              color: color.withAlpha(20),
+              color: roleColor.withAlpha(20),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Text(
               title,
-              style: AppTextStyles.headlineMedium.copyWith(
-                color: color,
+              style: (isMobile ? AppTextStyles.titleLarge : AppTextStyles.headlineMedium).copyWith(
+                color: roleColor,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(24),
+          // Challenge section
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(isMobile ? 16 : 24, isMobile ? 16 : 20, isMobile ? 16 : 24, isMobile ? 12 : 16),
+            color: const Color(0xFFFFF5F5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _Label(text: 'The Challenge', icon: Icons.close, color: Colors.redAccent),
-                const SizedBox(height: 12),
+                _Label(text: 'The Challenge', icon: Icons.close, color: AppColors.error, isMobile: isMobile),
+                const SizedBox(height: 10),
                 ...challenges.map((c) => _ListItem(
                       text: c,
                       icon: Icons.close,
-                      iconColor: Colors.redAccent,
+                      iconColor: AppColors.error,
+                      isMobile: isMobile,
                     )),
-                const SizedBox(height: 24),
-                _Label(text: 'How Pamoja Thrift Helps', icon: Icons.check_circle, color: AppColors.primary),
-                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+          // Solution section
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(isMobile ? 16 : 24, isMobile ? 16 : 20, isMobile ? 16 : 24, isMobile ? 16 : 24),
+            decoration: const BoxDecoration(
+              color: Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _Label(text: 'How Pamoja Thrift Helps', icon: Icons.check_circle, color: AppColors.success, isMobile: isMobile),
+                const SizedBox(height: 10),
                 ...solutions.map((s) => _ListItem(
                       text: s,
                       icon: Icons.check_circle,
-                      iconColor: AppColors.primary,
+                      iconColor: AppColors.success,
+                      isMobile: isMobile,
                     )),
               ],
             ),
@@ -164,24 +187,26 @@ class _Label extends StatelessWidget {
   final String text;
   final IconData icon;
   final Color color;
+  final bool isMobile;
 
   const _Label({
     required this.text,
     required this.icon,
     required this.color,
+    this.isMobile = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: color, size: 22),
-        const SizedBox(width: 10),
+        Icon(icon, color: color, size: isMobile ? 18 : 22),
+        const SizedBox(width: 8),
         Text(
           text,
-          style: AppTextStyles.titleMedium.copyWith(
+          style: (isMobile ? AppTextStyles.bodyLarge : AppTextStyles.titleMedium).copyWith(
             fontWeight: FontWeight.w600,
-            color: color,
+            color: AppColors.textPrimary,
           ),
         ),
       ],
@@ -193,29 +218,34 @@ class _ListItem extends StatelessWidget {
   final String text;
   final IconData icon;
   final Color iconColor;
+  final bool isMobile;
 
   const _ListItem({
     required this.text,
     required this.icon,
     required this.iconColor,
+    this.isMobile = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: isMobile ? 6 : 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 3),
-            child: Icon(icon, color: iconColor, size: 18),
+            child: Icon(icon, color: iconColor, size: isMobile ? 16 : 18),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: AppTextStyles.bodyLarge.copyWith(height: 1.5),
+              style: (isMobile ? AppTextStyles.bodyMedium : AppTextStyles.bodyLarge).copyWith(
+                height: 1.4,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
         ],

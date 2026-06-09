@@ -43,8 +43,8 @@ class ContactSection extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Wrap(
-            spacing: 40,
-            runSpacing: 24,
+            spacing: isMobile ? 16 : 40,
+            runSpacing: isMobile ? 32 : 24,
             alignment: WrapAlignment.center,
             children: [
               _ContactItem(
@@ -95,14 +95,17 @@ class _ContactItem extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary,
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
           style: AppTextStyles.titleMedium.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
           ),
         ),
       ],
