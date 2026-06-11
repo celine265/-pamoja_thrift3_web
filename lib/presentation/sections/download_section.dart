@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../core/animations/scroll_animations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../widgets/cta_button.dart';
@@ -19,39 +18,40 @@ class DownloadSection extends StatelessWidget {
     return Container(
       color: AppColors.primary,
       child: SectionWrapper(
-        topPadding: 60,
-        bottomPadding: 60,
+        topPadding: 16,
+        bottomPadding: 20,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.android, color: Colors.white.withAlpha(200), size: 48),
-            const SizedBox(height: 12),
+            Icon(Icons.android, color: Colors.white.withAlpha(200), size: 28),
+            const SizedBox(height: 6),
             Text(
               'Start Thrifting Smarter Today',
               style: (isMobile
-                      ? AppTextStyles.displaySmall
-                      : AppTextStyles.displayMedium)
-                  .copyWith(color: AppColors.textOnPrimary),
+                      ? AppTextStyles.headlineMedium
+                      : AppTextStyles.displaySmall)
+                  .copyWith(color: AppColors.textOnPrimary, fontSize: isMobile ? 20 : 28),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 4),
             Text(
-              'Join buyers and sellers using Pamoja Thrift to simplify second-hand shopping.',
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: Colors.white.withAlpha(217),
-                fontSize: 16,
+              'Join buyers and sellers using Pamoja Thrift.',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white.withAlpha(200),
+                fontSize: isMobile ? 13 : 14,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
             CtaButton(
               label: 'Download APK',
               icon: Icons.download,
               isPrimary: true,
               onPressed: onDownloadTap,
             ),
-            const SizedBox(height: 28),
-            _InstallInstructions(isMobile: isMobile),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
+            _InstallSteps(isMobile: isMobile),
+            const SizedBox(height: 10),
             _QrCodePlaceholder(),
           ],
         ),
@@ -60,135 +60,229 @@ class DownloadSection extends StatelessWidget {
   }
 }
 
-class _InstallInstructions extends StatelessWidget {
+class _InstallSteps extends StatelessWidget {
   final bool isMobile;
 
-  const _InstallInstructions({required this.isMobile});
+  const _InstallSteps({required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
     final steps = [
-      _StepData('⬇️', 'Download APK', 'Tap the Download APK button above.'),
-      _StepData('⚙️', 'Enable Unknown Sources', 'Allow installation from outside the Play Store.'),
-      _StepData('📱', 'Install & Enjoy', 'Open the APK file and start using Pamoja Thrift.'),
+      _StepData('Download APK', 'Tap the button above to download.'),
+      _StepData('Enable Unknown Sources', 'Allow installation from external sources.'),
+      _StepData('Install & Enjoy', 'Open the APK and complete installation.'),
     ];
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'How to Install',
-          style: AppTextStyles.titleLarge.copyWith(
+          style: AppTextStyles.titleMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
+            fontSize: isMobile ? 15 : 16,
           ),
         ),
-        const SizedBox(height: 24),
-        ...List.generate(steps.length, (i) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _TimelineStep(step: steps[i], stepNumber: i + 1),
-              if (i < steps.length - 1)
-                Container(
-                  width: 3,
-                  height: 28,
-                  color: AppColors.primary.withAlpha(120),
-                ),
-            ],
-          );
-        }),
+        SizedBox(height: isMobile ? 8 : 10),
+        if (isMobile)
+          _MobileSteps(steps: steps)
+        else
+          _DesktopSteps(steps: steps),
       ],
     );
   }
 }
 
 class _StepData {
-  final String emoji;
   final String title;
   final String description;
 
-  const _StepData(this.emoji, this.title, this.description);
+  const _StepData(this.title, this.description);
 }
 
-class _TimelineStep extends StatelessWidget {
+class _MobileSteps extends StatelessWidget {
+  final List<_StepData> steps;
+
+  const _MobileSteps({required this.steps});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: steps.length,
+      separatorBuilder: (_, i) => Container(
+        height: 20,
+        width: 2,
+        color: AppColors.primary.withAlpha(120),
+        margin: const EdgeInsets.only(left: 13),
+      ),
+      itemBuilder: (_, i) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '${i + 1}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(12),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      steps[i].title,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      steps[i].description,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondary,
+                        height: 1.3,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DesktopSteps extends StatelessWidget {
+  final List<_StepData> steps;
+
+  const _DesktopSteps({required this.steps});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(steps.length * 2 - 1, (i) {
+        if (i.isOdd) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Icon(
+              Icons.arrow_forward,
+              color: AppColors.accent,
+              size: 22,
+            ),
+          );
+        }
+        final idx = i ~/ 2;
+        return Expanded(
+          child: _DesktopStepCard(
+            step: steps[idx],
+            stepNumber: idx + 1,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _DesktopStepCard extends StatelessWidget {
   final _StepData step;
   final int stepNumber;
 
-  const _TimelineStep({
+  const _DesktopStepCard({
     required this.step,
     required this.stepNumber,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSection(
-      duration: const Duration(milliseconds: 600),
-      delay: const Duration(milliseconds: 100),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(20),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(14),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Number circle
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      '$stepNumber',
-                      style: AppTextStyles.titleMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '$stepNumber',
+                style: AppTextStyles.titleMedium.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-                const SizedBox(width: 14),
-                // Content
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${step.emoji} ${step.title}',
-                        style: AppTextStyles.titleMedium.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        step.description,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: 6),
+          Text(
+            step.title,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 3),
+          Text(
+            step.description,
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.2,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -199,26 +293,27 @@ class _QrCodePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMobile = ResponsiveBreakpoints.of(context).isMobile;
     return Container(
-      width: isMobile ? 100 : 130,
-      height: isMobile ? 100 : 130,
+      width: isMobile ? 80 : 100,
+      height: isMobile ? 80 : 100,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.white.withAlpha(100), width: 2),
       ),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.qr_code, size: 48, color: AppColors.primary),
-            const SizedBox(height: 4),
+            Icon(Icons.qr_code, size: isMobile ? 36 : 40, color: AppColors.primary),
+            const SizedBox(height: 2),
             Text(
               'Scan to\nDownload',
               textAlign: TextAlign.center,
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w500,
-                height: 1.3,
+                height: 1.2,
+                fontSize: isMobile ? 10 : 11,
               ),
             ),
           ],

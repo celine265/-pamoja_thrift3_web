@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -78,10 +80,29 @@ class FooterSection extends StatelessWidget {
           const SizedBox(height: 16),
           // Copyright
           Text(
-            '© 2026 Pamoja Thrift. All Rights Reserved.',
+            '© 2026 Pamoja Thrift. All rights reserved.',
+            textAlign: TextAlign.center,
             style: AppTextStyles.caption.copyWith(
               color: AppColors.textSecondary,
             ),
+          ),
+          const SizedBox(height: 4),
+          // Credit
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                'Designed & Developed by ',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              _CreditLink(
+                label: 'Celina Bulyar',
+                url: 'https://celine-portfolio-steel.vercel.app',
+              ),
+            ],
           ),
         ],
       ),
@@ -117,6 +138,49 @@ class _FooterLinkState extends State<_FooterLink> {
           duration: const Duration(milliseconds: 200),
           style: AppTextStyles.navLink.copyWith(
             color: _isHovered ? AppColors.accent : const Color(0xFFF8F9FA),
+          ),
+          child: Text(widget.label),
+        ),
+      ),
+    );
+  }
+}
+
+class _CreditLink extends StatefulWidget {
+  final String label;
+  final String url;
+
+  const _CreditLink({
+    required this.label,
+    required this.url,
+  });
+
+  @override
+  State<_CreditLink> createState() => _CreditLinkState();
+}
+
+class _CreditLinkState extends State<_CreditLink> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: () {
+          html.AnchorElement(href: widget.url)
+            ..target = '_blank'
+            ..rel = 'noopener noreferrer'
+            ..click();
+        },
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          style: AppTextStyles.caption.copyWith(
+            color: _isHovered
+                ? AppColors.primaryLight
+                : AppColors.primary,
           ),
           child: Text(widget.label),
         ),
